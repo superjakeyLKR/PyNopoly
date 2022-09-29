@@ -5,4 +5,4 @@ If the file "settings.json" doesn't exist, it will be automatically made with th
 ### TODO:
 #### Make houses work
 #### Fix bugs (probably)
-#### Some other third thing.
+#### Loading games. (Difficult because I don't know to deserialise the classes once you save them.)
