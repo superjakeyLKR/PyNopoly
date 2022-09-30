@@ -251,6 +251,7 @@ def main():
         main()
 
     if tax_goes_in_middle: middle = 0
+    else: middle = -1
 
     while 1:
         for player in players:
@@ -383,7 +384,7 @@ def main():
                             elif issubclass(board[player.position].__class__, Tax):
                                 player.money -= board[player.position].amount
                                 print(f"{player.name} paid ${board[player.position].amount} in taxes")
-                                if middle: 
+                                if middle > 0: 
                                     middle += board[player.position].amount
                                     print("It was put into the middle!")
                                 input("Press enter to continue")
@@ -424,7 +425,7 @@ def main():
                                             print(_player.name)
 
                                 elif board[player.position].name == "Free Parking":
-                                    if middle:
+                                    if middle > 0:
                                         print(f"{player.name} collected ${middle} from the middle")
                                         middle = 0
                                     else:
@@ -449,6 +450,8 @@ def main():
                                     i+=1
                             if i==0:
                                 print("No properties. (Yet!)")
+                                if middle > 0:
+                                    print(f"There is ${middle} in the middle. (You can take it if you land on Free Parking!)")
                             input("Press enter to continue")
                             ClearScreen()
                             continue
