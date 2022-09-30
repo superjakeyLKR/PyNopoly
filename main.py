@@ -164,299 +164,306 @@ board = [
 ]
 
 def main():
-    #load it if settings.json exists and has data
-    if os.path.exists("settings.json"):
-        with open("settings.json", "r") as f:
-            settings = load(f)
-            money = settings["starting_money"]
-            double_land_on_go = settings["double_land_on_go"]
-            cant_buy_on_first_turn = settings["cant_buy_on_first_turn"]
-            tax_goes_in_middle = settings["tax_goes_in_middle"]
-    else:
-        money = 1500
-        double_land_on_go, cant_buy_on_first_turn, tax_goes_in_middle = False, False, False    
+    try:
+        #load it if settings.json exists and has data
+        if os.path.exists("settings.json"):
+            with open("settings.json", "r") as f:
+                settings = load(f)
+                money = settings["starting_money"]
+                double_land_on_go = settings["double_land_on_go"]
+                cant_buy_on_first_turn = settings["cant_buy_on_first_turn"]
+                tax_goes_in_middle = settings["tax_goes_in_middle"]
+        else:
+            money = 1500
+            double_land_on_go, cant_buy_on_first_turn, tax_goes_in_middle = False, False, False    
 
-    Title()
-    #ask for player names
-    #ask for number of players
-    #create players
+        Title()
+        #ask for player names
+        #ask for number of players
+        #create players
 
-    option = input("What would you like to do?\n1. Play\n2. Load Game\n3. Open Settings\n")
-    ClearScreen()
-    if option == "1":
-        player_num = int(input("How many players? "))
-
-        while player_num < 2 or player_num > 6:
-            print("Invalid number of players")
+        option = input("What would you like to do?\n1. Play\n2. Load Game\n3. Open Settings\n")
+        ClearScreen()
+        if option == "1":
             player_num = int(input("How many players? "))
 
-        players = []
+            while player_num < 2 or player_num > 6:
+                print("Invalid number of players")
+                player_num = int(input("How many players? "))
 
-        for i in range(player_num):
-            name = input("Player {}'s Name: ".format(i+1))
-            players.append(Player(name, money))
+            players = []
 
-        ClearScreen()
+            for i in range(player_num):
+                name = input("Player {}'s Name: ".format(i+1))
+                players.append(Player(name, money))
 
-    elif option == "2":
-        print("Not implemented yet")
-        print("Probably not gonna happen")
-        input("Press enter to continue")
-        ClearScreen()
-        main()
-    elif option == "3":
-        SettingsTitle()
-        option = input("What would you like to do?\n1. Change starting money\n2. Add house rules\n3. Back\n")
-        ClearScreen()
-        SettingsTitle()
-        if option == "1":
-            print(f"Current starting money: {money}")
-            money = int(input("What would you like to change it to?\n"))
-            print(f"Starting money changed to {money}")
+            ClearScreen()
 
-            input("Press enter to continue")
         elif option == "2":
-            print("Current settings:")
-            print(f"Double land on go: {double_land_on_go}")
-            print(f"Cant buy on first turn: {cant_buy_on_first_turn}")
-            print(f"Tax goes in middle: {tax_goes_in_middle}")
-            option = input("What would you like to do?\n1. Change double land on go\n2. Change can't buy on first turn\n3. Change tax goes in middle\n4. Back\n")
-            
+            print("Not implemented yet")
+            print("Probably not gonna happen")
+            input("Press enter to continue")
+            ClearScreen()
+            main()
+        elif option == "3":
+            SettingsTitle()
+            option = input("What would you like to do?\n1. Change starting money\n2. Add house rules\n3. Back\n")
+            ClearScreen()
+            SettingsTitle()
             if option == "1":
-                double_land_on_go = not double_land_on_go
-                print(f"Double land on go changed to {double_land_on_go}")
-                input("Press enter to continue")
+                print(f"Current starting money: {money}")
+                money = int(input("What would you like to change it to?\n"))
+                print(f"Starting money changed to {money}")
 
+                input("Press enter to continue")
             elif option == "2":
-                cant_buy_on_first_turn = not cant_buy_on_first_turn
-                print(f"Cant buy on first turn changed to {cant_buy_on_first_turn}")
-                input("Press enter to continue")
-
-            elif option == "3":
-                tax_goes_in_middle = not tax_goes_in_middle
-                print(f"Tax goes in middle changed to {tax_goes_in_middle}")
-                input("Press enter to continue")
-
-            else:
-                print("Invalid option")
-                input("Press enter to continue")
-
-        SaveSettings(money, double_land_on_go, cant_buy_on_first_turn, tax_goes_in_middle)
-        ClearScreen()
-        main()
-    else:
-        print(f"{option} is an invalid option")
-        input("Press enter to continue")
-        ClearScreen()
-        main()
-
-    if tax_goes_in_middle: middle = 0
-    else: middle = -1
-
-    while 1:
-        for player in players:
-            turns = 0
-            roll, roll2 = 0, 0
-            #makes sure that the player still to roll
-            #if they get a double they get another chance
-            while roll == roll2:
-                print(f"\n{player.name}'s turn")
-
-                if turns > 0: print(f"Double number {turns}")
-                turns += 1
-                if turns == 4: #Actually the third turn
-                    print("You have rolled a double 3 times in a row. You are now in jail")
-                    player.in_jail = True
-                    player.turns_in_jail = 3
-                    player.location = 10
+                print("Current settings:")
+                print(f"Double land on go: {double_land_on_go}")
+                print(f"Cant buy on first turn: {cant_buy_on_first_turn}")
+                print(f"Tax goes in middle: {tax_goes_in_middle}")
+                option = input("What would you like to do?\n1. Change double land on go\n2. Change can't buy on first turn\n3. Change tax goes in middle\n4. Back\n")
+                
+                if option == "1":
+                    double_land_on_go = not double_land_on_go
+                    print(f"Double land on go changed to {double_land_on_go}")
                     input("Press enter to continue")
-                    break
-                if player.turns_in_jail > 0:
-                    print(f"{player.name} is in jail")
-                    print(f"{player.name} has {player.turns_in_jail} turns left in jail")
-                    print(f"{player.name} has {player.money} dollars")
-                    choice = input("What would you like to do?\n1. Roll\n2. Pay $50\n")
 
-                    if choice in ["1", "roll", "r"]:
-                        roll, roll2 = randint(1, 6), randint(1, 6)
-                        print(f"{player.name} rolled a {roll} and a {roll2}.")
+                elif option == "2":
+                    cant_buy_on_first_turn = not cant_buy_on_first_turn
+                    print(f"Cant buy on first turn changed to {cant_buy_on_first_turn}")
+                    input("Press enter to continue")
 
-                        if roll == roll2:
-                            player.turns_in_jail = 0
-                            print("They are now out of jail.")
-                        else:
-                            player.turns_in_jail -= 1
-                            print(f"{player.name} has {player.turns_in_jail} turns left in jail")
-                            if player.turns_in_jail == 0:
-                                print(f"{player.name} is now out of jail.")
+                elif option == "3":
+                    tax_goes_in_middle = not tax_goes_in_middle
+                    print(f"Tax goes in middle changed to {tax_goes_in_middle}")
+                    input("Press enter to continue")
 
-                    elif choice in ["2", "pay", "p"]:
-                        player.money -= 50
-                        print(f"{player.name} paid $50")
-                        player.turns_in_jail = 0
-                        print(f"{player.name} is now out of jail.")
-
-                    else:
-                        print("Invalid option")
-                        input("Press enter to continue")
-                        ClearScreen()
-                        continue
                 else:
-                    not_roll = True
-                    print(f"Money: ${player.money}")
-                    while not_roll:
-                        choice = input("What would you like to do?\n1. Roll to move\n2. Information\n")
+                    print("Invalid option")
+                    input("Press enter to continue")
+
+            SaveSettings(money, double_land_on_go, cant_buy_on_first_turn, tax_goes_in_middle)
+            ClearScreen()
+            main()
+        else:
+            print(f"{option} is an invalid option")
+            input("Press enter to continue")
+            ClearScreen()
+            main()
+
+        if tax_goes_in_middle: middle = 0
+        else: middle = -1
+
+        while 1:
+            for player in players:
+                turns = 0
+                roll, roll2 = 0, 0
+                #makes sure that the player still to roll
+                #if they get a double they get another chance
+                while roll == roll2:
+                    print(f"\n{player.name}'s turn")
+
+                    if turns > 0: print(f"Double number {turns}")
+                    turns += 1
+                    if turns == 4: #Actually the third turn
+                        print("You have rolled a double 3 times in a row. You are now in jail")
+                        player.in_jail = True
+                        player.turns_in_jail = 3
+                        player.location = 10
+                        input("Press enter to continue")
+                        break
+                    if player.turns_in_jail > 0:
+                        print(f"{player.name} is in jail")
+                        print(f"{player.name} has {player.turns_in_jail} turns left in jail")
+                        print(f"{player.name} has {player.money} dollars")
+                        choice = input("What would you like to do?\n1. Roll\n2. Pay $50\n")
+
                         if choice in ["1", "roll", "r"]:
-                            not_roll = False
-                            ClearScreen()
                             roll, roll2 = randint(1, 6), randint(1, 6)
                             print(f"{player.name} rolled a {roll} and a {roll2}.")
-                            player.position += (roll + roll2)
-                            if player.position > 39:
-                                player.position -= 40
-                                print(f"{player.name} passed go and collected $200")
-                                player.money += 200
-                                player.passed_go = True
-                            print(f"{player.name} is on {board[player.position].name}")
-                            if issubclass(board[player.position].__class__, Property):
-                                _property = board[player.position]
 
-                                if _property.owner is None:
-                                    if cant_buy_on_first_turn and not player.passed_go:
-                                        print(f"{player.name} cannot buy this property")
-                                        input("Press enter to continue")
-                                        ClearScreen()
-                                        continue
+                            if roll == roll2:
+                                player.turns_in_jail = 0
+                                print("They are now out of jail.")
+                            else:
+                                player.turns_in_jail -= 1
+                                print(f"{player.name} has {player.turns_in_jail} turns left in jail")
+                                if player.turns_in_jail == 0:
+                                    print(f"{player.name} is now out of jail.")
 
-                                    else:
-                                        print(f"It costs ${_property.cost}")
-                                        choice = input("What would you like to do?\n1. Buy\n2. Pass\n")
+                        elif choice in ["2", "pay", "p"]:
+                            player.money -= 50
+                            print(f"{player.name} paid $50")
+                            player.turns_in_jail = 0
+                            print(f"{player.name} is now out of jail.")
 
-                                        if choice in ["1", "buy", "b"]:
-                                            if player.money >= _property.cost:
-                                                player.money -= _property.cost
-                                                _property.owner = player.name
-                                                print(f"{player.name} bought {_property.name} for ${_property.cost}")
-                                                input("Press enter to continue")
-                                                ClearScreen()
-                                                continue
-
-                                            else:
-                                                print(f"{player.name} cannot afford {_property.name}")
-                                                input("Press enter to continue")
-                                                ClearScreen()
-                                                continue
-
-                                        elif choice in ["2", "pass", "p"]:
-                                            print(f"{player.name} passed on {_property.name}")
-                                            input("Press enter to continue")
-                                            ClearScreen()
-                                            continue
-                                        else:
-                                            print("Invalid option")
-                                            input("Press enter to continue")
-                                            ClearScreen()
-                                            continue
-                                else:
-                                    #find the owner from the list of players
-                                    for _player in players:
-                                        if _player.name == _property.owner:
-                                            owner = _player
-                                            break
-                                    
-                                    if owner.name == player.name:
-                                        print(f"{player.name} owns {_property.name}")
-                                        input("Press enter to continue")
-                                        ClearScreen()
-                                        continue
-
-                                    print(f"{player.name} is paying rent to {owner.name}")
-                                    if player.money >= _property.rent[0]:
-                                        owner.money += _property.rent[0]
-                                        player.money -= _property.rent[0]
-                                        print(f"{player.name} paid ${_property.rent[0]} to {owner.name}")
-                                    else:
-                                        print(f"{player.name} cannot afford to pay the full rent.")
-
-                                    input("Press enter to continue")
-                                    ClearScreen()
-                                    continue
-                            elif issubclass(board[player.position].__class__, Tax):
-                                player.money -= board[player.position].amount
-                                print(f"{player.name} paid ${board[player.position].amount} in taxes")
-                                if middle > 0: 
-                                    middle += board[player.position].amount
-                                    print("It was put into the middle!")
-                                input("Press enter to continue")
-                                ClearScreen()
-                                continue
-                            elif issubclass(board[player.position].__class__, CardGiver):
-                                card = randchoice(cards)
-                                left_bar = " " * (len(card.name) + 2) + "|" 
-                                print("|" + "-" * (len(card.name) + 2) + "|")
-                                print(f"|{left_bar}\n| {card.name} |\n|{left_bar}")
-                                print("|" + "-" * (len(card.name) + 2) + "|")
-                                input("Press enter to continue")
-                                player.money += card.gain
-                                ClearScreen()
-                                continue
-                            elif issubclass(board[player.position].__class__, Misc):
-                                print(board[player.position].name)
-                                if board[player.position].name == "Go to Jail":
-                                    player.position = 10
-                                    print(f"{player.name} went to jail")
-                                    input("Press enter to continue")
-                                    ClearScreen()
-                                    continue
-                                elif board[player.position].name == "Just Visiting":
-                                    #find the players who are in jail
-                                    in_jail = []
-
-                                    for _player in players:
-                                        if _player.turns_in_jail > 0:
-                                            in_jail.append(_player)
-
-                                    print(f"{player.name} was just visiting: ")
-
-                                    if len(in_jail) == 0:
-                                        print("Nobody!")
-                                    else:
-                                        for _player in in_jail:
-                                            print(_player.name)
-
-                                elif board[player.position].name == "Free Parking":
-                                    if middle > 0:
-                                        print(f"{player.name} collected ${middle} from the middle")
-                                        middle = 0
-                                    else:
-                                        print(f"{player.name} gets to park free, I guess")
-                                
-                                elif board[player.position].name == "Go" and double_land_on_go:
-                                    player.money += 400
-                                    print(f"{player.name} got $400 for landing on Go")
-
-                                input("Press enter to continue")
-                                ClearScreen()
-                                continue
-                            else: print("HOW DID YOU GET HERE?")
-                        elif choice in ["2", "info", "i", "information"]:
-                            ClearScreen()
-                            print(f"You are on {board[player.position].name}")
-                            print(f"You own: ")
-                            i=0
-                            for _property in board:
-                                if issubclass(_property.__class__, Property) and _property.owner == player.name:
-                                    print(_property.name)
-                                    i+=1
-                            if i==0:
-                                print("No properties. (Yet!)")
-                                if middle > 0:
-                                    print(f"There is ${middle} in the middle. (You can take it if you land on Free Parking!)")
+                        else:
+                            print("Invalid option")
                             input("Press enter to continue")
                             ClearScreen()
                             continue
                     else:
-                        continue
+                        not_roll = True
+                        print(f"Money: ${player.money}")
+                        while not_roll:
+                            choice = input("What would you like to do?\n1. Roll to move\n2. Information\n")
+                            if choice in ["1", "roll", "r"]:
+                                not_roll = False
+                                ClearScreen()
+                                roll, roll2 = randint(1, 6), randint(1, 6)
+                                print(f"{player.name} rolled a {roll} and a {roll2}.")
+                                player.position += (roll + roll2)
+                                if player.position > 39:
+                                    player.position -= 40
+                                    print(f"{player.name} passed go and collected $200")
+                                    player.money += 200
+                                    player.passed_go = True
+                                print(f"{player.name} is on {board[player.position].name}")
+                                if issubclass(board[player.position].__class__, Property):
+                                    _property = board[player.position]
+
+                                    if _property.owner is None:
+                                        if cant_buy_on_first_turn and not player.passed_go:
+                                            print(f"{player.name} cannot buy this property")
+                                            input("Press enter to continue")
+                                            ClearScreen()
+                                            continue
+
+                                        else:
+                                            print(f"It costs ${_property.cost}")
+                                            choice = input("What would you like to do?\n1. Buy\n2. Pass\n")
+
+                                            if choice in ["1", "buy", "b"]:
+                                                if player.money >= _property.cost:
+                                                    player.money -= _property.cost
+                                                    _property.owner = player.name
+                                                    print(f"{player.name} bought {_property.name} for ${_property.cost}")
+                                                    input("Press enter to continue")
+                                                    ClearScreen()
+                                                    continue
+
+                                                else:
+                                                    print(f"{player.name} cannot afford {_property.name}")
+                                                    input("Press enter to continue")
+                                                    ClearScreen()
+                                                    continue
+
+                                            elif choice in ["2", "pass", "p"]:
+                                                print(f"{player.name} passed on {_property.name}")
+                                                input("Press enter to continue")
+                                                ClearScreen()
+                                                continue
+                                            else:
+                                                print("Invalid option")
+                                                input("Press enter to continue")
+                                                ClearScreen()
+                                                continue
+                                    else:
+                                        #find the owner from the list of players
+                                        for _player in players:
+                                            if _player.name == _property.owner:
+                                                owner = _player
+                                                break
+                                        
+                                        if owner.name == player.name:
+                                            print(f"{player.name} owns {_property.name}")
+                                            input("Press enter to continue")
+                                            ClearScreen()
+                                            continue
+
+                                        print(f"{player.name} is paying rent to {owner.name}")
+                                        if player.money >= _property.rent[0]:
+                                            owner.money += _property.rent[0]
+                                            player.money -= _property.rent[0]
+                                            print(f"{player.name} paid ${_property.rent[0]} to {owner.name}")
+                                        else:
+                                            print(f"{player.name} cannot afford to pay the full rent.")
+
+                                        input("Press enter to continue")
+                                        ClearScreen()
+                                        continue
+                                elif issubclass(board[player.position].__class__, Tax):
+                                    player.money -= board[player.position].amount
+                                    print(f"{player.name} paid ${board[player.position].amount} in taxes")
+                                    if middle > 0: 
+                                        middle += board[player.position].amount
+                                        print("It was put into the middle!")
+                                    input("Press enter to continue")
+                                    ClearScreen()
+                                    continue
+                                elif issubclass(board[player.position].__class__, CardGiver):
+                                    card = randchoice(cards)
+                                    left_bar = " " * (len(card.name) + 2) + "|" 
+                                    print("|" + "-" * (len(card.name) + 2) + "|")
+                                    print(f"|{left_bar}\n| {card.name} |\n|{left_bar}")
+                                    print("|" + "-" * (len(card.name) + 2) + "|")
+                                    input("Press enter to continue")
+                                    player.money += card.gain
+                                    ClearScreen()
+                                    continue
+                                elif issubclass(board[player.position].__class__, Misc):
+                                    print(board[player.position].name)
+                                    if board[player.position].name == "Go to Jail":
+                                        player.position = 10
+                                        print(f"{player.name} went to jail")
+                                        input("Press enter to continue")
+                                        ClearScreen()
+                                        continue
+                                    elif board[player.position].name == "Just Visiting":
+                                        #find the players who are in jail
+                                        in_jail = []
+
+                                        for _player in players:
+                                            if _player.turns_in_jail > 0:
+                                                in_jail.append(_player)
+
+                                        print(f"{player.name} was just visiting: ")
+
+                                        if len(in_jail) == 0:
+                                            print("Nobody!")
+                                        else:
+                                            for _player in in_jail:
+                                                print(_player.name)
+
+                                    elif board[player.position].name == "Free Parking":
+                                        if middle > 0:
+                                            print(f"{player.name} collected ${middle} from the middle")
+                                            middle = 0
+                                        else:
+                                            print(f"{player.name} gets to park free, I guess")
+                                    
+                                    elif board[player.position].name == "Go" and double_land_on_go:
+                                        player.money += 400
+                                        print(f"{player.name} got $400 for landing on Go")
+
+                                    input("Press enter to continue")
+                                    ClearScreen()
+                                    continue
+                                else: print("HOW DID YOU GET HERE?")
+                            elif choice in ["2", "info", "i", "information"]:
+                                ClearScreen()
+                                print(f"You are on {board[player.position].name}")
+                                print(f"You own: ")
+                                i=0
+                                for _property in board:
+                                    if issubclass(_property.__class__, Property) and _property.owner == player.name:
+                                        print(_property.name)
+                                        i+=1
+                                if i==0:
+                                    print("No properties. (Yet!)")
+                                    if middle > 0:
+                                        print(f"There is ${middle} in the middle. (You can take it if you land on Free Parking!)")
+                                input("Press enter to continue")
+                                ClearScreen()
+                                continue
+                        else:
+                            continue
+    except KeyboardInterrupt:
+        print("Exiting the game...")
+        input("Press enter to continue")
+    except:
+        print("An error has occured. Please contact the developer. Exiting program...")
+        input("Press enter to continue")
 
 if __name__ == "__main__":
     main()
